@@ -18,7 +18,7 @@ pub async fn add_files(all: bool, files: Vec<String>) {
         interactive_add(&auto_ignores);
     }
 
-    println!("successfully added, do you want to commit also");
+    println!("successfully added, do you want to commit also (y/n)");
     let mut answer = String::new();
     std::io::stdin().read_line(&mut answer).unwrap();
 

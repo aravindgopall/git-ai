@@ -21,7 +21,7 @@ pub async fn commit_changes(amend: bool, reword: bool, ai: bool) {
     } else {
         normal_commit();
     }
-    println!("successfully commit, do you want me to push also");
+    println!("successfully commit, do you want to push also (y/n)");
     let mut answer = String::new();
     std::io::stdin().read_line(&mut answer).unwrap();
 
