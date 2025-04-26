@@ -9,7 +9,7 @@ mod utils;
 mod web;
 
 use crate::commands::{
-    add, commit, git_runner, hooks, ignore, init, pull, push, staging, stash, status,
+    add, clone, commit, git_runner, hooks, ignore, init, pull, push, staging, stash, status,
 };
 use clap::{Parser, Subcommand};
 
@@ -71,6 +71,9 @@ enum Commands {
     Init {
         #[arg(long, default_value = "true")]
         magic: bool,
+    },
+    Clone {
+        url: String,
     },
 }
 
@@ -135,6 +138,9 @@ async fn main() {
         }
         Commands::Init { magic } => {
             init::smart_init(magic).await;
+        }
+        Commands::Clone { url } => {
+            clone::smart_clone(url);
         }
     }
 }
