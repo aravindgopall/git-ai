@@ -1,5 +1,5 @@
-use colored::*;
 use std::io::{self, Write};
+use colored::*;
 use std::process::Command;
 
 pub fn push_changes() {
@@ -17,26 +17,28 @@ pub fn push_changes() {
     if remote_url.starts_with("git@") {
         println!("🔒 Detected SSH-based remote.");
 
-        println!("🛡️ Do you want to add your SSH key to avoid password prompts? (y/n): ");
-        io::stdout().flush().unwrap();
-        let mut answer = String::new();
-        io::stdin().read_line(&mut answer).unwrap();
+        if std::env::var("SSH_AUTH_SOCK").is_ok() {
+            println!("🛡️ Do you want to add your SSH key to avoid password prompts? (y/n): ");
+            io::stdout().flush().unwrap();
+            let mut answer = String::new();
+            io::stdin().read_line(&mut answer).unwrap();
 
-        if answer.trim().to_lowercase() == "y" {
-            println!("🔑 Starting ssh-agent and adding your key...");
+            if answer.trim().to_lowercase() == "y" {
+                println!("🔑 Starting ssh-agent and adding your key...");
 
-            Command::new("ssh-agent")
-                .arg("-s")
-                .status()
-                .expect("Failed to start ssh-agent");
+                Command::new("ssh-agent")
+                    .arg("-s")
+                    .status()
+                    .expect("Failed to start ssh-agent");
 
-            Command::new("ssh-add")
-                .status()
-                .expect("Failed to add SSH key");
+                Command::new("ssh-add")
+                    .status()
+                    .expect("Failed to add SSH key");
 
-            println!("✅ SSH key added. Proceeding to push...");
-        } else {
-            println!("⚡ Skipping SSH setup. Proceeding to push...");
+                println!("✅ SSH key added. Proceeding to push...");
+            } else {
+                println!("⚡ Skipping SSH setup. Proceeding to push...");
+            }
         }
     } else {
         println!("🌐 HTTPS remote detected. No SSH needed.");
