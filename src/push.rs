@@ -1,7 +1,7 @@
-use std::io::{self, Write};
-use colored::*;
-use std::process::Command;
 use crate::utils::is_ssh_agent_running;
+use colored::*;
+use std::io::{self, Write};
+use std::process::Command;
 
 pub fn push_changes() {
     println!("🚀 Preparing to push changes...");

@@ -5,7 +5,7 @@ use crate::utils::{detect_language, get_combined_ignores, should_ignore_file, La
 use colored::*;
 use std::process::Command;
 
-pub fn run_staging(interactive: bool) {
+pub fn run_staging(interactive: bool, _ai: bool) {
     println!("{}", "🔍 Preparing smart interactive staging...".cyan());
 
     let language = detect_language();

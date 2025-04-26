@@ -3,9 +3,8 @@ use glob::glob;
 use std::fs;
 use std::io::{self, Write};
 use std::path::Path;
-use terminal_size::{terminal_size, Height};
 use std::process::{Command, Stdio};
-
+use terminal_size::{terminal_size, Height};
 
 #[derive(Debug, Clone)]
 pub enum Language {

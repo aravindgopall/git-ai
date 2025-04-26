@@ -739,17 +739,21 @@ name = "git-ai"
 version = "0.1.0"
 dependencies = [
  "async-std",
+ "async-trait",
  "clap",
  "colored",
  "git2",
  "glob",
  "indicatif",
+ "once_cell",
  "rand 0.9.1",
  "regex",
  "reqwest",
  "rocket",
  "serde",
+ "serde_json",
  "terminal_size",
+ "tokio",
  "toml 0.7.8",
 ]
 
@@ -2283,6 +2287,7 @@ dependencies = [
  "bytes",
  "libc",
  "mio",
+ "parking_lot",
  "pin-project-lite",
  "signal-hook-registry",
  "socket2",
