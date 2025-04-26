@@ -1,4 +1,5 @@
-use crate::{config, filters, interact, prompts};
+use crate::commands::interact;
+use crate::{config, filters, prompts};
 use std::process::Command;
 
 pub fn run_diff(prompt: Option<String>, profile: Option<String>) {

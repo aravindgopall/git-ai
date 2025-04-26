@@ -4,7 +4,7 @@ use crate::push::push_changes;
 use crate::utils::has_staged_changes;
 use colored::*;
 use std::io::{self, Write};
-use std::process::Command; 
+use std::process::Command;
 
 pub async fn commit_changes(amend: bool, reword: bool, ai: bool) {
     let mut is_committed = false;

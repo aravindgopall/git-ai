@@ -1,4 +1,4 @@
-use crate::hunk::split_diff_into_hunks;
+use crate::commands::hunk::split_diff_into_hunks;
 use crate::utils::show_in_pager;
 
 pub fn start_interactive_review(diff: String) {

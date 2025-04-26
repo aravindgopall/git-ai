@@ -1,5 +1,5 @@
 use crate::ai::suggest_commit_message;
-use crate::hunk::interactive_stage_file;
+use crate::commands::hunk::interactive_stage_file;
 use crate::push::push_changes;
 use crate::utils::{detect_language, get_combined_ignores, should_ignore_file, Language};
 use colored::*;

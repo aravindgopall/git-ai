@@ -1,22 +1,14 @@
-mod add;
 mod ai;
 mod branding;
-mod commit;
+mod commands;
 mod config;
 mod filters;
-mod git_runner;
-mod hooks;
-mod hunk;
-mod interact;
 mod llms;
 mod prompts;
-mod pull;
-mod push;
-mod staging;
-mod status;
 mod utils;
 mod web;
 
+use crate::commands::{add, commit, git_runner, hooks, pull, push, staging, stash, status};
 use clap::{Parser, Subcommand};
 
 #[derive(Parser)]
@@ -64,6 +56,18 @@ enum Commands {
     Push {},
     Status {},
     Pull {},
+    Stash {
+        #[command(subcommand)]
+        command: StashSubcommand,
+    },
+}
+
+#[derive(Subcommand)]
+enum StashSubcommand {
+    Save,
+    List,
+    Pop,
+    Drop,
 }
 
 #[tokio::main]
@@ -108,5 +112,11 @@ async fn main() {
         Commands::Pull {} => {
             pull::smart_pull();
         }
+        Commands::Stash { command } => match command {
+            StashSubcommand::Save => stash::stash_handler("save"),
+            StashSubcommand::List => stash::stash_handler("list"),
+            StashSubcommand::Pop => stash::stash_handler("pop"),
+            StashSubcommand::Drop => stash::stash_handler("drop"),
+        },
     }
 }
