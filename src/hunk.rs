@@ -73,7 +73,7 @@ pub fn interactive_stage_file(filename: &str) {
     }
 }
 
-fn split_diff_into_hunks(diff_text: &str) -> (String, Vec<String>) {
+pub fn split_diff_into_hunks(diff_text: &str) -> (String, Vec<String>) {
     let mut header = String::new();
     let mut hunks = Vec::new();
     let mut current_hunk = String::new();

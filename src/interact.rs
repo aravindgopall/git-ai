@@ -1,24 +1,12 @@
 use colored::*;
 use std::io::{self, Write};
+use crate::hunk::split_diff_into_hunks; 
+use crate::utils::show_in_pager;
 
 pub fn start_interactive_review(diff: String) {
-    for (i, line) in diff.lines().enumerate() {
-        if line.trim().is_empty() {
-            continue;
-        }
+    let (_header, hunks) = split_diff_into_hunks(&diff);
 
-        println!("\n[{}] {}", i + 1, line.bright_yellow());
-        print!("Keep this change? (y/n): ");
-        io::stdout().flush().unwrap();
-
-        let mut answer = String::new();
-        io::stdin().read_line(&mut answer).unwrap();
-
-        if answer.trim().to_lowercase() == "y" {
-            println!("{}", "[Kept]".green());
-            println!("{}", line.bright_white());
-        } else {
-            println!("{}", "[Ignored]".red());
-        }
+    for (_, hunk) in hunks.iter().enumerate() {
+        show_in_pager(hunk); 
     }
 }

@@ -1,5 +1,6 @@
 use crate::hunk::interactive_stage_file;
 use crate::utils::{detect_language, should_ignore_file, get_combined_ignores, Language};
+use crate::ai::suggest_commit_message;
 use colored::*;
 use std::process::Command;
 
@@ -67,6 +68,7 @@ pub fn run_staging(interactive: bool) {
     );
 
     let mut staged_count = 0;
+    let mut ask_for_commit = false;
     for filename in unstaged_files.iter() {
         if interactive {
             interactive_stage_file(filename);
@@ -99,6 +101,7 @@ pub fn run_staging(interactive: bool) {
             "{}",
             format!("✅ You staged {} files during review.", staged_count).green()
         );
+        ask_for_commit = true;
     }
 
     if unstaged_files.len() - staged_count > 1 && unstaged_files.len() - staged_count != no_count {
@@ -120,9 +123,57 @@ pub fn run_staging(interactive: bool) {
                     .expect("Failed to git add");
             }
             println!("{}", "🚀 Auto-staged remaining files.".bright_green());
+            ask_for_commit=true;
         } else {
             println!("{}", "🛑 Left files unstaged as per your choice.".yellow());
         }
+    }
+    if ask_for_commit {
+        println!("🔔 Do you want to commit the staged changes now? (y/n): ");
+    let mut commit_now = String::new();
+    std::io::stdin().read_line(&mut commit_now).unwrap();
+
+    if commit_now.trim().to_lowercase() == "y" {
+        let suggested = suggest_commit_message();
+        println!("\n✨ Suggested commit message: {}", suggested.bright_magenta());
+        println!("Use this message? (y/n/custom): ");
+
+        let mut accept_msg = String::new();
+        std::io::stdin().read_line(&mut accept_msg).unwrap();
+
+        match accept_msg.trim().to_lowercase().as_str() {
+            "y" => {
+                Command::new("git")
+                    .arg("commit")
+                    .arg("-m")
+                    .arg(suggested)
+                    .status()
+                    .expect("Failed to git commit");
+                println!("{}", "✅ Committed with suggested message!".green());
+            }
+            "n" => {
+                println!("{}", "❌ Commit skipped. You can commit manually.".yellow());
+            }
+            "custom" => {
+                println!("📝 Enter your custom commit message:");
+                let mut custom_msg = String::new();
+                std::io::stdin().read_line(&mut custom_msg).unwrap();
+
+                Command::new("git")
+                    .arg("commit")
+                    .arg("-m")
+                    .arg(custom_msg.trim())
+                    .status()
+                    .expect("Failed to git commit");
+                println!("{}", "✅ Committed with your custom message!".green());
+            }
+            _ => {
+                println!("{}", "❌ Invalid choice. Commit skipped.".yellow());
+            }
+        }
+    } else {
+        println!("{}", "🛑 Not committing now. You can commit manually.".yellow());
+    }
     }
 
     if !auto_ignored_files.is_empty() {

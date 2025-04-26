@@ -112,7 +112,7 @@ pub fn show_in_pager(content: &str) {
             break;
         }
 
-        print!("{}", "-- More -- (press space to continue, q to quit) ");
+        print!("{}", "-- More -- (press enter to continue, q to quit) ");
         io::stdout().flush().unwrap();
         let mut input = String::new();
         io::stdin().read_line(&mut input).unwrap();

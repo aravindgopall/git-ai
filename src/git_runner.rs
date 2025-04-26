@@ -1,8 +1,8 @@
-use crate::{ai, config, filters, interact, prompts};
+use crate::{config, filters, interact, prompts};
 use colored::*;
 use std::process::Command;
 
-pub fn run_diff(prompt: Option<String>, profile: Option<String>, interactive: bool) {
+pub fn run_diff(prompt: Option<String>, profile: Option<String>) {
     let output = Command::new("git")
         .arg("diff")
         .output()
@@ -22,33 +22,5 @@ pub fn run_diff(prompt: Option<String>, profile: Option<String>, interactive: bo
 
     let cleaned_diff = filters::apply_ignores(diff_text.to_string(), ignores);
 
-    if interactive {
-        interact::start_interactive_review(cleaned_diff);
-    } else {
-        println!("{}", cleaned_diff.bright_white());
-    }
-    let funny_commit = ai::suggest_commit_message();
-    println!(
-        "\n✨ Suggested Commit Message: {}",
-        funny_commit.bright_magenta()
-    );
-    println!("Use this commit message? (y/n)");
-
-    let mut answer = String::new();
-    std::io::stdin().read_line(&mut answer).unwrap();
-
-    if answer.trim().to_lowercase() == "y" {
-        std::process::Command::new("git")
-            .arg("commit")
-            .arg("-m")
-            .arg(funny_commit)
-            .status()
-            .expect("Failed to git commit");
-        println!("{}", "✅ Committed!".green());
-    } else {
-        println!(
-            "{}",
-            "❌ Skipping auto-commit. You can commit manually.".yellow()
-        );
-    }
+    interact::start_interactive_review(cleaned_diff);
 }

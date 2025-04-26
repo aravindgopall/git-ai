@@ -31,8 +31,6 @@ enum Commands {
         prompt: Option<String>,
         #[arg(long)]
         profile: Option<String>,
-        #[arg(short, long, default_value = "false")]
-        interactive: bool,
     },
     Stage {
         #[arg(short, long, default_value = "false")]
@@ -53,9 +51,8 @@ fn main() {
         Commands::Diff {
             prompt,
             profile,
-            interactive,
         } => {
-            git_runner::run_diff(prompt, profile, interactive);
+            git_runner::run_diff(prompt, profile);
         }
         Commands::Stage { interactive } => {
             staging::run_staging(interactive);
