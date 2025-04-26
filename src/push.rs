@@ -1,6 +1,7 @@
 use std::io::{self, Write};
 use colored::*;
 use std::process::Command;
+use crate::utils::is_ssh_agent_running;
 
 pub fn push_changes() {
     println!("🚀 Preparing to push changes...");
@@ -17,7 +18,7 @@ pub fn push_changes() {
     if remote_url.starts_with("git@") {
         println!("🔒 Detected SSH-based remote.");
 
-        if std::env::var("SSH_AUTH_SOCK").is_ok() {
+        if !is_ssh_agent_running() {
             println!("🛡️ Do you want to add your SSH key to avoid password prompts? (y/n): ");
             io::stdout().flush().unwrap();
             let mut answer = String::new();

@@ -4,6 +4,8 @@ use std::fs;
 use std::io::{self, Write};
 use std::path::Path;
 use terminal_size::{terminal_size, Height};
+use std::process::{Command, Stdio};
+
 
 #[derive(Debug, Clone)]
 pub enum Language {
@@ -133,4 +135,14 @@ pub fn show_in_pager(content: &str) {
             }
         }
     }
+}
+
+pub fn is_ssh_agent_running() -> bool {
+    Command::new("ssh-add")
+        .arg("-l") // list loaded keys
+        .stdout(Stdio::null())
+        .stderr(Stdio::null())
+        .status()
+        .map(|status| status.success())
+        .unwrap_or(false)
 }
