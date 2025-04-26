@@ -1,0 +1,14 @@
+[default]
+localhost
+/tmp/
+127.0.0.1
+
+[rust_project]
+target/
+Cargo.lock
+
+[frontend]
+node_modules/
+dist/
+localhost
+
