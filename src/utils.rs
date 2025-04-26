@@ -156,4 +156,3 @@ pub fn has_staged_changes() -> bool {
 
     !status.success()
 }
-

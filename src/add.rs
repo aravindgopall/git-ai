@@ -2,8 +2,9 @@ use crate::utils::{detect_language, get_combined_ignores, should_ignore_file};
 use colored::*;
 use std::io::{self, Write};
 use std::process::Command;
+use crate::commit::commit_changes;
 
-pub fn add_files(all: bool, files: Vec<String>) {
+pub async fn add_files(all: bool, files: Vec<String>) {
     println!("{}", "🔍 Preparing to add files...".cyan());
 
     let language = detect_language();
@@ -15,6 +16,14 @@ pub fn add_files(all: bool, files: Vec<String>) {
         add_specific_files(&files, &auto_ignores);
     } else {
         interactive_add(&auto_ignores);
+    }
+
+    println!("successfully added, do you want to commit also");
+    let mut answer = String::new();
+    std::io::stdin().read_line(&mut answer).unwrap();
+
+    if answer.trim().to_lowercase() == "y" {
+        commit_changes(false,false,true).await;
     }
 }
 
@@ -46,7 +55,7 @@ fn add_all_files(auto_ignores: &[String]) {
     if unstaged_files.is_empty() {
         println!("{}", "⚠️ Only ignored files found.".yellow());
         println!("Do you still want to stage everything including ignored files? (y/n): ");
-        
+
         let mut answer = String::new();
         std::io::stdin().read_line(&mut answer).unwrap();
         let answer = answer.trim().to_lowercase();
@@ -76,13 +85,15 @@ fn add_all_files(auto_ignores: &[String]) {
     }
 }
 
-
 fn add_specific_files(files: &[String], auto_ignores: &[String]) {
     for file in files {
         if should_ignore_file(file, auto_ignores) {
-            println!("⚠️ File '{}' matches ignore patterns.", file.bright_yellow());
+            println!(
+                "⚠️ File '{}' matches ignore patterns.",
+                file.bright_yellow()
+            );
             println!("Do you still want to stage it? (y/n): ");
-            
+
             let mut answer = String::new();
             std::io::stdin().read_line(&mut answer).unwrap();
             let answer = answer.trim().to_lowercase();

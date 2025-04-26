@@ -80,7 +80,7 @@ async fn main() {
             staging::run_staging(interactive, ai);
         }
         Commands::Add { all, files } => {
-            add::add_files(all, files);
+            add::add_files(all, files).await;
         }
         Commands::Web {} => {
             web::start_server();

@@ -1,14 +1,18 @@
 use crate::ai::generate_commit_message;
 use crate::ai::suggest_commit_message;
+use crate::push::push_changes;
+use crate::utils::has_staged_changes;
 use colored::*;
 use std::io::{self, Write};
 use std::process::Command; // fallback
-use crate::utils::has_staged_changes;
 
 pub async fn commit_changes(amend: bool, reword: bool, ai: bool) {
     if !has_staged_changes() {
-        println!("{}", "⚠️ No staged changes found. Please stage files first!".yellow());
-        return
+        println!(
+            "{}",
+            "⚠️ No staged changes found. Please stage files first!".yellow()
+        );
+        return;
     }
     if amend {
         commit_amend().await;
@@ -24,6 +28,13 @@ pub async fn commit_changes(amend: bool, reword: bool, ai: bool) {
     }
 
     normal_commit();
+    println!("successfully commit, do you want me to push also");
+    let mut answer = String::new();
+    std::io::stdin().read_line(&mut answer).unwrap();
+
+    if answer.trim().to_lowercase() == "y" {
+        push_changes();
+    }
 }
 
 async fn commit_with_ai() {
