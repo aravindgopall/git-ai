@@ -1,10 +1,22 @@
 use colored::*;
-use std::fs::{self, File};
+use std::fs::{self, File, OpenOptions};
 use std::io;
 use std::io::Write;
+use std::path::Path;
 use std::process::Command;
 
 use crate::ai::generate_project_scaffolding;
+
+#[derive(Debug, Clone)]
+pub enum ProjectLanguage {
+    Rust,
+    Node,
+    Python,
+    Java,
+    Go,
+    Haskell,
+    Unknown,
+}
 
 pub async fn smart_init(magic: bool) {
     println!("{}", "📦 Initializing Git repository...".cyan());
@@ -148,7 +160,35 @@ fn save_file_from_section(content: &str, filename: &str) {
     println!("✅ {} created!", filename);
 }
 
+fn interactive_select_language() -> ProjectLanguage {
+    println!("\n⚡ Could not auto-detect project type.");
+    println!("What language is this project in?");
+    println!("1. Rust");
+    println!("2. Node.js");
+    println!("3. Python");
+    println!("4. Java");
+    println!("5. Go");
+    println!("6. Haskell");
+    println!("7. Other");
+
+    print!("Pick (1-7): ");
+    io::stdout().flush().unwrap();
+
+    let mut input = String::new();
+    io::stdin().read_line(&mut input).unwrap();
+    match input.trim() {
+        "1" => ProjectLanguage::Rust,
+        "2" => ProjectLanguage::Node,
+        "3" => ProjectLanguage::Python,
+        "4" => ProjectLanguage::Java,
+        "5" => ProjectLanguage::Go,
+        "6" => ProjectLanguage::Haskell,
+        _ => ProjectLanguage::Unknown,
+    }
+}
+
 pub fn normal_init() {
+    let language = interactive_select_language();
     if Command::new("git")
         .arg("init")
         .status()
@@ -160,51 +200,86 @@ pub fn normal_init() {
         println!("{}", "❌ Failed to initialize Git.".red());
         return;
     }
-
-    setup_gitignore();
-    setup_git_ai_ignore();
+    setup_gitignore(&language);
+    setup_git_ai_ignore(&language);
     setup_readme();
     setup_git_config();
 
     println!("{}", "🚀 All ready! Start building!".bright_cyan());
 }
 
-// Setup .gitignore
-fn setup_gitignore() {
-    if fs::metadata(".gitignore").is_ok() {
-        println!("⚡ .gitignore already exists, skipping.");
+// Append to existing .gitignore
+fn append_gitignore(language: &ProjectLanguage) {
+    let mut file = OpenOptions::new()
+        .append(true)
+        .open(".gitignore")
+        .expect("Failed to open .gitignore");
+    write_gitignore_contents(&mut file, language);
+}
+
+// Append to existing .git-ai-ignore
+fn append_gitai_ignore(language: &ProjectLanguage) {
+    let mut file = OpenOptions::new()
+        .append(true)
+        .open(".git-ai-ignore")
+        .expect("Failed to open .git-ai-ignore");
+    write_gitai_ignore_contents(&mut file, language);
+}
+
+// Content writing for .gitignore
+fn write_gitignore_contents(file: &mut File, language: &ProjectLanguage) {
+    let patterns = match language {
+        ProjectLanguage::Rust => "/target/\nCargo.lock",
+        ProjectLanguage::Node => "/node_modules/\n/dist/\n.env",
+        ProjectLanguage::Python => "__pycache__/\n*.pyc\n.venv/",
+        ProjectLanguage::Java => "target/\n*.class",
+        ProjectLanguage::Go => "bin/\npkg/\n*.exe",
+        ProjectLanguage::Haskell => "dist/\n*.hi\n*.o",
+        ProjectLanguage::Unknown => "*.log\n*.tmp\n.DS_Store",
+    };
+
+    writeln!(file, "\n# Added by git-ai\n{}", patterns).expect("Failed to write to file");
+}
+
+// Content writing for .git-ai-ignore
+fn write_gitai_ignore_contents(file: &mut File, language: &ProjectLanguage) {
+    let patterns = match language {
+        ProjectLanguage::Rust => "/target/\nCargo.lock",
+        ProjectLanguage::Node => "/node_modules/\n/dist/\n.env\n*.lock",
+        ProjectLanguage::Python => "__pycache__/\n*.pyc\n*.pyo\n.env",
+        ProjectLanguage::Java => "/target/\n*.class\n.env",
+        ProjectLanguage::Go => "/bin/\n/pkg/\n*.exe\n*.test",
+        ProjectLanguage::Haskell => "/dist/\n*.hi\n*.o",
+        ProjectLanguage::Unknown => "*.log\n*.tmp\n*.cache",
+    };
+
+    writeln!(file, "\n# Added by git-ai\n{}", patterns).expect("Failed to write to file");
+}
+
+fn setup_gitignore(language: &ProjectLanguage) {
+    if Path::new(".gitignore").exists() {
+        println!("⚡ .gitignore already exists, appending...");
+        append_gitignore(language);
         return;
     }
 
     let mut file = File::create(".gitignore").expect("Failed to create .gitignore");
-
-    writeln!(
-        file,
-        "# Standard Git ignores\n/target/\n/node_modules/\n/dist/\n.env\n*.log\n.DS_Store"
-    )
-    .expect("Failed to write to .gitignore");
-
+    write_gitignore_contents(&mut file, language);
     println!("{}", "✅ .gitignore created.".green());
 }
 
 // Setup .git-ai-ignore
-fn setup_git_ai_ignore() {
-    if fs::metadata(".git-ai-ignore").is_ok() {
-        println!("⚡ .git-ai-ignore already exists, skipping.");
+fn setup_git_ai_ignore(language: &ProjectLanguage) {
+    if Path::new(".git-ai-ignore").exists() {
+        println!("⚡ .git-ai-ignore already exists, appending...");
+        append_gitai_ignore(language);
         return;
     }
 
     let mut file = File::create(".git-ai-ignore").expect("Failed to create .git-ai-ignore");
-
-    writeln!(
-        file,
-        "# Git-AI ignores\n/target/\n/node_modules/\n/build/\n*.tmp\n*.cache"
-    )
-    .expect("Failed to write to .git-ai-ignore");
-
+    write_gitai_ignore_contents(&mut file, language);
     println!("{}", "✅ .git-ai-ignore created.".green());
 }
-
 // Setup starter README.md
 fn setup_readme() {
     if fs::metadata("README.md").is_ok() {

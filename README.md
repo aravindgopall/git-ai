@@ -8,15 +8,17 @@ Next-gen Git Assistant: Interactive staging. Smart diff cleaning. Terminal magic
 
 ---
 
-## ✨ Features
+## ✨ Core Features
 
-- 🔥 Interactive hunk-by-hunk staging (y/n/Y/N/q)
-- 📦 Auto-detect project type (Rust, Node.js, Python, Haskell, etc)
-- 🛡️ Auto-ignore junk files like `node_modules/`, `target/`, `dist/`
-- 🧹 Custom ignore patterns with `.git-ai-ignore` (also backward compatible with .gitignore)
-- 📜 Smart internal pager (like `git add -p`)
-- 🎨 Beautiful colored output
-- ⚡ Extremely lightweight and blazing fast
+- 📝 `git-ai status` → Clean, color-coded git status with hints
+- 🛡️ `git-ai add` → Smarter `git add` with interactive picker
+- 🔥 `git-ai stage` → Stage hunks interactively (`y/n/Y/N/q`)
+- ✍️ `git-ai commit` → AI-suggested commit messages + amend/reword options
+- 📥 `git-ai pull` → Smart pull with auto-stash, conflict detection, and rebase choice
+- 🎒 `git-ai stash` → Interactive stash (save, list, pop, drop)
+- 📦 `git-ai init` → Smart git init with project detection + optional AI magic
+- 🔮 `git-ai init --magic` → Let AI generate `.gitignore`, `.git-ai-ignore`, and README
+- 🌐 Multi-LLM support (OpenAI, Azure, Ollama, Claude, Gemini)
 
 ---
 
@@ -28,25 +30,35 @@ cd git-ai
 cargo install --path .
 ```
 
-## Usage
+## 🚀 CLI Commands
+
+```
+Command | Purpose
+git-ai status | Enhanced git status with conflict hints
+git-ai add | Add files interactively
+git-ai stage | Interactive hunk staging
+git-ai commit | AI commit messages, amend, reword
+git-ai pull | Auto-stash, incoming commits summary
+git-ai stash save/list/pop/drop | Full stash manager
+git-ai init | Smart repo initialization
+git-ai init --magic | Full LLM magic project setup
+```
+
+🤖 AI-Powered Features
+
+```
+Feature | Description
+Commit Message AI | Generates smart, clean commit messages
+Magic Init AI | Suggests .gitignore, .git-ai-ignore, README.md
+Supported LLMs | OpenAI, Azure OpenAI, Claude, Gemini, Ollama
+```
+
+set your backend easily
 
 ```bash
-# Fast staging (auto-stage clean files)
+export GIT_AI_LLM=openai  # or azure, ollama, claude, gemini
 
-git-ai stage
-
-# Interactive staging (review hunks one-by-one)
-
-git-ai stage --interactive
-
-# Smart diff review (natural language coming soon 🚀)
-
-git-ai diff
-
-# Web mode (coming soon 🚀)
-
-git-ai web
-
+# further set the respective env's
 ```
 
 ## Example .git-ai-ignore
