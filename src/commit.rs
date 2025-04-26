@@ -12,22 +12,15 @@ pub async fn commit_changes(amend: bool, reword: bool, ai: bool) {
             "{}",
             "⚠️ No staged changes found. Please stage files first!".yellow()
         );
-        return;
-    }
-    if amend {
+    } else if amend {
         commit_amend().await;
-        return;
-    }
-    if reword {
+    } else if reword {
         commit_reword();
-        return;
-    }
-    if ai {
+    } else if ai {
         commit_with_ai().await;
-        return;
+    } else {
+        normal_commit();
     }
-
-    normal_commit();
     println!("successfully commit, do you want me to push also");
     let mut answer = String::new();
     std::io::stdin().read_line(&mut answer).unwrap();

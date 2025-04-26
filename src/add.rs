@@ -1,8 +1,8 @@
+use crate::commit::commit_changes;
 use crate::utils::{detect_language, get_combined_ignores, should_ignore_file};
 use colored::*;
 use std::io::{self, Write};
 use std::process::Command;
-use crate::commit::commit_changes;
 
 pub async fn add_files(all: bool, files: Vec<String>) {
     println!("{}", "🔍 Preparing to add files...".cyan());
@@ -23,7 +23,7 @@ pub async fn add_files(all: bool, files: Vec<String>) {
     std::io::stdin().read_line(&mut answer).unwrap();
 
     if answer.trim().to_lowercase() == "y" {
-        commit_changes(false,false,true).await;
+        commit_changes(false, false, true).await;
     }
 }
 
