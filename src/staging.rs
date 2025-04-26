@@ -43,6 +43,11 @@ pub fn run_staging(interactive: bool) {
             continue;
         }
 
+        if status_y == 'D' {
+            println!("🗑️ Deleted file detected: {}", filename.bright_red());
+            unstaged_files.push(filename.to_string());
+        }
+
         if status_x == 'M' || status_x == 'A' {
             staged_files.push(filename.to_string());
         }
