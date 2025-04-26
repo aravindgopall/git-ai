@@ -10,6 +10,7 @@ mod hunk;
 mod interact;
 mod llms;
 mod prompts;
+mod pull;
 mod push;
 mod staging;
 mod status;
@@ -62,6 +63,7 @@ enum Commands {
     Precommit {}, // ➡️ New command added here
     Push {},
     Status {},
+    Pull {},
 }
 
 #[tokio::main]
@@ -102,6 +104,9 @@ async fn main() {
         }
         Commands::Commit { amend, reword, ai } => {
             commit::commit_changes(amend, reword, ai).await;
+        }
+        Commands::Pull {} => {
+            pull::smart_pull();
         }
     }
 }

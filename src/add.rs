@@ -148,7 +148,7 @@ fn interactive_add(auto_ignores: &[String]) {
         println!("{}. {}", i + 1, file);
     }
 
-    println!("\nPick files to stage (e.g., 1,2,5 or 'all'):");
+    println!("\nPick files to stage space seperated (e.g., 1 2 5 or 'all'):");
     print!("> ");
     io::stdout().flush().unwrap();
 
@@ -166,7 +166,7 @@ fn interactive_add(auto_ignores: &[String]) {
             println!("✅ Staged: {}", file.bright_green());
         }
     } else {
-        let picks: Vec<&str> = selection.split(',').collect();
+        let picks: Vec<&str> = selection.split(' ').collect();
         for pick in picks {
             if let Ok(index) = pick.trim().parse::<usize>() {
                 if index > 0 && index <= unstaged_files.len() {
