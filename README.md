@@ -33,24 +33,26 @@ cargo install --path .
 ## 🚀 CLI Commands
 
 ```
-Command | Purpose
-git-ai status | Enhanced git status with conflict hints
-git-ai add | Add files interactively
-git-ai stage | Interactive hunk staging
-git-ai commit | AI commit messages, amend, reword
-git-ai pull | Auto-stash, incoming commits summary
+Command                         | Purpose
+-------------------------------------------------------------------------
+git-ai status                   | Enhanced git status with conflict hints
+git-ai add                      | Add files interactively
+git-ai stage                    | Interactive hunk staging
+git-ai commit                   | AI commit messages, amend, reword
+git-ai pull                     | Auto-stash, incoming commits summary
 git-ai stash save/list/pop/drop | Full stash manager
-git-ai init | Smart repo initialization
-git-ai init --magic | Full LLM magic project setup
+git-ai init                     | Smart repo initialization
+git-ai init --magic             | Full LLM magic project setup
 ```
 
 🤖 AI-Powered Features
 
 ```
-Feature | Description
-Commit Message AI | Generates smart, clean commit messages
-Magic Init AI | Suggests .gitignore, .git-ai-ignore, README.md
-Supported LLMs | OpenAI, Azure OpenAI, Claude, Gemini, Ollama
+Feature                 | Description
+-------------------------------------------------------------------------
+Commit Message AI       | Generates smart, clean commit messages
+Magic Init AI           | Suggests .gitignore, .git-ai-ignore, README.md
+Supported LLMs          | OpenAI, Azure OpenAI, Claude, Gemini, Ollama
 ```
 
 set your backend easily
