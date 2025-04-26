@@ -1,3 +1,4 @@
+use crate::config::GIT_AI_CONFIG;
 use colored::*;
 use std::io::{self, Write};
 use std::path::Path;
@@ -120,6 +121,15 @@ fn open_in_editor(repo: &str) {
     println!("📦 Trying to open {} in your editor...", repo);
 
     if let Ok(editor) = std::env::var("EDITOR") {
+        println!("🛠️ Using editor from $EDITOR: {}", editor);
+        Command::new(editor)
+            .arg(".")
+            .current_dir(repo)
+            .status()
+            .expect("Failed to open editor");
+        return;
+    }
+    if let Some(editor) = &GIT_AI_CONFIG.editor {
         println!("🛠️ Using editor from $EDITOR: {}", editor);
         Command::new(editor)
             .arg(".")

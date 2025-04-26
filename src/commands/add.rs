@@ -1,4 +1,5 @@
 use crate::commit::commit_changes;
+use crate::config::GIT_AI_CONFIG;
 use crate::utils::{detect_language, get_combined_ignores, should_ignore_file};
 use colored::*;
 use std::io::{self, Write};
@@ -18,12 +19,17 @@ pub async fn add_files(all: bool, files: Vec<String>) {
         interactive_add(&auto_ignores);
     }
 
+    if GIT_AI_CONFIG.auto_commit {
+        commit_changes(false, false, GIT_AI_CONFIG.ai_enabled).await;
+        return;
+    }
+
     println!("successfully added, do you want to commit also (y/n)");
     let mut answer = String::new();
     std::io::stdin().read_line(&mut answer).unwrap();
 
     if answer.trim().to_lowercase() == "y" {
-        commit_changes(false, false, true).await;
+        commit_changes(false, false, GIT_AI_CONFIG.ai_enabled).await;
     }
 }
 

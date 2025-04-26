@@ -1,7 +1,9 @@
 use crate::ai::generate_commit_message;
 use crate::ai::suggest_commit_message;
+use crate::config::GIT_AI_CONFIG;
 use crate::push::push_changes;
 use crate::utils::has_staged_changes;
+
 use colored::*;
 use std::io::{self, Write};
 use std::process::Command;
@@ -24,6 +26,10 @@ pub async fn commit_changes(amend: bool, reword: bool, ai: bool) {
     }
 
     if is_committed {
+        if GIT_AI_CONFIG.auto_push {
+            push_changes();
+            return;
+        }
         println!("successfully commit, do you want to push also (y/n)");
         let mut answer = String::new();
         std::io::stdin().read_line(&mut answer).unwrap();
