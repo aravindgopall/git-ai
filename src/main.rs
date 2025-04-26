@@ -8,7 +8,9 @@ mod prompts;
 mod utils;
 mod web;
 
-use crate::commands::{add, commit, git_runner, hooks, pull, push, staging, stash, status};
+use crate::commands::{
+    add, commit, git_runner, hooks, ignore, init, pull, push, staging, stash, status,
+};
 use clap::{Parser, Subcommand};
 
 #[derive(Parser)]
@@ -59,6 +61,16 @@ enum Commands {
     Stash {
         #[command(subcommand)]
         command: StashSubcommand,
+    },
+    Ignore {
+        #[arg(long, default_value = "false")]
+        suggest: bool,
+        #[arg(long, default_value = "false")]
+        save: bool,
+    },
+    Init {
+        #[arg(long, default_value = "true")]
+        magic: bool,
     },
 }
 
@@ -118,5 +130,11 @@ async fn main() {
             StashSubcommand::Pop => stash::stash_handler("pop"),
             StashSubcommand::Drop => stash::stash_handler("drop"),
         },
+        Commands::Ignore { suggest, save } => {
+            ignore::ignore_handler(suggest, save).await;
+        }
+        Commands::Init { magic } => {
+            init::smart_init(magic).await;
+        }
     }
 }
