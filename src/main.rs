@@ -1,3 +1,4 @@
+mod add;
 mod ai;
 mod branding;
 mod commit;
@@ -42,6 +43,11 @@ enum Commands {
         #[arg(long, default_value = "false")]
         ai: bool,
     },
+    Add {
+        #[arg(short, long)]
+        all: bool,
+        files: Vec<String>,
+    },
     Commit {
         #[arg(long, default_value = "false")]
         amend: bool,
@@ -72,6 +78,9 @@ async fn main() {
         }
         Commands::Stage { interactive, ai } => {
             staging::run_staging(interactive, ai);
+        }
+        Commands::Add { all, files } => {
+            add::add_files(all, files);
         }
         Commands::Web {} => {
             web::start_server();

@@ -38,9 +38,7 @@ impl LLMBackend {
                 check_env("GEMINI_API_KEY");
                 LLMBackend::Gemini
             }
-            "nollm" => {
-                LLMBackend::NoLLM
-            }
+            "nollm" => LLMBackend::NoLLM,
             other => {
                 panic!("❌ Unknown LLM backend: '{}'", other);
             }

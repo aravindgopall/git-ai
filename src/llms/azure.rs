@@ -14,13 +14,14 @@ impl LLMProvider for AzureOpenAIProvider {
         let endpoint =
             std::env::var("AZURE_OPENAI_ENDPOINT").expect("AZURE_OPENAI_ENDPOINT not set");
         let api_key = std::env::var("AZURE_OPENAI_API_KEY").expect("AZURE_OPENAI_API_KEY not set");
-        let api_version = std::env::var("AZURE_OPENAI_API_VERSION").expect("AZURE_OPENAI_API_VERSION not set");
+        let api_version =
+            std::env::var("AZURE_OPENAI_API_VERSION").expect("AZURE_OPENAI_API_VERSION not set");
         let deployment =
             std::env::var("AZURE_OPENAI_DEPLOYMENT").expect("AZURE_OPENAI_DEPLOYMENT not set");
 
         let url = format!(
             "{}/openai/deployments/{}/chat/completions?api-version={}",
-            endpoint, deployment,api_version
+            endpoint, deployment, api_version
         );
 
         let body = json!({

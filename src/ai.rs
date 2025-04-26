@@ -2,8 +2,8 @@ use crate::llms::LLMProvider;
 use crate::llms::{self, backend::LLMBackend};
 use once_cell::sync::Lazy;
 use rand::prelude::*;
-use std::sync::Mutex;
 use std::error::Error;
+use std::sync::Mutex;
 
 pub static BACKEND: Lazy<Mutex<Option<LLMBackend>>> = Lazy::new(|| Mutex::new(None));
 
@@ -25,7 +25,7 @@ pub async fn generate_commit_message(
         LLMBackend::Ollama => llms::ollama::OllamaProvider::generate_commit_message(diff).await,
         LLMBackend::Claude => llms::claude::ClaudeProvider::generate_commit_message(diff).await,
         LLMBackend::Gemini => llms::gemini::GeminiProvider::generate_commit_message(diff).await,
-        LLMBackend::NoLLM => Err(Box::<dyn Error + Send + Sync>::from("no_llm is set"))
+        LLMBackend::NoLLM => Err(Box::<dyn Error + Send + Sync>::from("no_llm is set")),
     }
 }
 
