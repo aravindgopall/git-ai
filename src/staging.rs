@@ -129,6 +129,13 @@ pub fn run_staging(interactive: bool) {
             println!("{}", "🛑 Left files unstaged as per your choice.".yellow());
         }
     }
+    if !auto_ignored_files.is_empty() {
+        println!(
+            "\n{}",
+            format!("🔵 Auto-ignored {} junk files!", auto_ignored_files.len()).bright_yellow()
+        );
+    }
+
     if ask_for_commit {
         println!("🔔 Do you want to commit the staged changes now? (y/n): ");
         let mut commit_now = String::new();
@@ -193,12 +200,5 @@ pub fn run_staging(interactive: bool) {
                 "🛑 Not committing now. You can commit manually.".yellow()
             );
         }
-    }
-
-    if !auto_ignored_files.is_empty() {
-        println!(
-            "\n{}",
-            format!("🔵 Auto-ignored {} junk files!", auto_ignored_files.len()).bright_yellow()
-        );
     }
 }
