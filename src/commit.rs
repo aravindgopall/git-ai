@@ -3,8 +3,13 @@ use crate::ai::suggest_commit_message;
 use colored::*;
 use std::io::{self, Write};
 use std::process::Command; // fallback
+use crate::utils::has_staged_changes;
 
 pub async fn commit_changes(amend: bool, reword: bool, ai: bool) {
+    if !has_staged_changes() {
+        println!("{}", "⚠️ No staged changes found. Please stage files first!".yellow());
+        return
+    }
     if amend {
         commit_amend().await;
         return;

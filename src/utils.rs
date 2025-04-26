@@ -145,3 +145,15 @@ pub fn is_ssh_agent_running() -> bool {
         .map(|status| status.success())
         .unwrap_or(false)
 }
+
+pub fn has_staged_changes() -> bool {
+    let status = Command::new("git")
+        .arg("diff")
+        .arg("--cached")
+        .arg("--quiet")
+        .status()
+        .expect("Failed to check staged changes");
+
+    !status.success()
+}
+

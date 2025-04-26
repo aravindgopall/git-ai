@@ -26,7 +26,7 @@ impl LLMProvider for AzureOpenAIProvider {
 
         let body = json!({
             "messages": [
-                {"role": "system", "content": "You are a Git commit message generator. Write concise commits based on diffs."},
+                {"role": "system", "content": "You are a Git commit message generator. Write concise commits based on diffs. Don't repeat yourself be concise and only how would normal developers write."},
                 {"role": "user", "content": format!("Generate a Git commit message for this diff:\n{}", diff)}
             ],
             "temperature": 0.2
