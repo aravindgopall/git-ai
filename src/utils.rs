@@ -1,10 +1,9 @@
-use std::path::Path;
-use std::io::{self, Write};
 use colored::*;
-use terminal_size::{terminal_size, Height};
 use glob::glob;
 use std::fs;
-
+use std::io::{self, Write};
+use std::path::Path;
+use terminal_size::{terminal_size, Height};
 
 #[derive(Debug, Clone)]
 pub enum Language {
@@ -103,7 +102,7 @@ pub fn show_in_pager(content: &str) {
 
     while current_line < total_lines {
         let end_line = usize::min(current_line + lines_per_page, total_lines);
-        
+
         for line in &lines[current_line..end_line] {
             println!("{}", line);
         }
@@ -130,9 +129,8 @@ pub fn show_in_pager(content: &str) {
                 break;
             }
             _ => {
-                current_line = end_line; 
+                current_line = end_line;
             }
         }
     }
 }
-

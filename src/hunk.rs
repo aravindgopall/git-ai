@@ -1,11 +1,14 @@
 use colored::*;
-use std::process::{Command, Stdio};
 use std::io::{self, Write};
+use std::process::{Command, Stdio};
 
 use crate::utils::show_in_pager;
 
 pub fn interactive_stage_file(filename: &str) {
-    println!("📝 Building full hunks for file: {}", filename.bright_blue());
+    println!(
+        "📝 Building full hunks for file: {}",
+        filename.bright_blue()
+    );
 
     let diff_output = Command::new("git")
         .arg("diff")
@@ -38,7 +41,7 @@ pub fn interactive_stage_file(filename: &str) {
             break;
         }
 
-        show_in_pager(&hunk);  
+        show_in_pager(&hunk);
         println!("Stage this hunk? (y = yes, n = no, Y = yes all, N = no all, q = quit): ");
         io::stdout().flush().unwrap();
         let mut answer = String::new();
@@ -83,7 +86,8 @@ pub fn split_diff_into_hunks(diff_text: &str) -> (String, Vec<String>) {
         if line.starts_with("diff --git") {
             header.push_str(line);
             header.push('\n');
-        } else if line.starts_with("index ") || line.starts_with("--- ") || line.starts_with("+++ ") {
+        } else if line.starts_with("index ") || line.starts_with("--- ") || line.starts_with("+++ ")
+        {
             header.push_str(line);
             header.push('\n');
         } else if line.starts_with("@@") {
@@ -126,4 +130,3 @@ fn apply_hunk(_filename: &str, header: &str, hunk_text: &str) {
 
     patch_cmd.wait().expect("Failed to wait on git apply");
 }
-

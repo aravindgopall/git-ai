@@ -1,5 +1,4 @@
 use crate::{config, filters, interact, prompts};
-use colored::*;
 use std::process::Command;
 
 pub fn run_diff(prompt: Option<String>, profile: Option<String>) {

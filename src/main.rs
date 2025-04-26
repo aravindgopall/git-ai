@@ -7,6 +7,7 @@ mod hooks;
 mod hunk;
 mod interact;
 mod prompts;
+mod push;
 mod staging;
 mod utils;
 mod web;
@@ -40,6 +41,7 @@ enum Commands {
     InstallHook {},
     UninstallHook {},
     Precommit {}, // ➡️ New command added here
+    Push {},
 }
 
 fn main() {
@@ -48,10 +50,7 @@ fn main() {
     let cli = Cli::parse();
 
     match cli.command {
-        Commands::Diff {
-            prompt,
-            profile,
-        } => {
+        Commands::Diff { prompt, profile } => {
             git_runner::run_diff(prompt, profile);
         }
         Commands::Stage { interactive } => {
@@ -68,6 +67,9 @@ fn main() {
         }
         Commands::Precommit {} => {
             hooks::run_precommit(); // ➡️ Run precommit checks
+        }
+        Commands::Push {} => {
+            push::push_changes();
         }
     }
 }
