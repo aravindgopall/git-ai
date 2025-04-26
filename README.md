@@ -83,5 +83,4 @@ __pycache__/
 - 🤖 Natural language prompts (git-ai diff --prompt "ignore paths")
 
 - ✍️ AI-generated commit messages
-
 - 📦 GitHub Action integration
