@@ -63,6 +63,15 @@ export GIT_AI_LLM=openai  # or azure, ollama, claude, gemini
 # further set the respective env's
 ```
 
+## .git-ai
+
+```bash
+[settings]
+llm_backend = "ollama"
+auto_commit = true
+auto_push = true
+```
+
 ## Example .git-ai-ignore
 
 ```bash
