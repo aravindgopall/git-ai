@@ -22,13 +22,6 @@ pub async fn add_files(all: bool, files: Vec<String>) {
 
     if is_added && GIT_AI_CONFIG.auto_commit {
         commit_changes(false, false, GIT_AI_CONFIG.ai_enabled).await;
-        println!("successfully added, do you want to commit also (y/n)");
-        let mut answer = String::new();
-        std::io::stdin().read_line(&mut answer).unwrap();
-
-        if answer.trim().to_lowercase() == "y" {
-            commit_changes(false, false, GIT_AI_CONFIG.ai_enabled).await;
-        }
         return;
     }
 }
