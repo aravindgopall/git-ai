@@ -1,0 +1,4 @@
+llm_backend = "azure"
+auto_commit = true
+auto_push = true
+ai_enabled = true

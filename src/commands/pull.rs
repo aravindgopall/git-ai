@@ -6,6 +6,7 @@ pub fn smart_pull() {
     println!("{}", "🔍 Checking Git pull situation...".cyan());
 
     let mut stashed = false;
+    let mut pull_happened = true;
 
     if !is_clean_working_tree() {
         println!("{}", "⚠️ Uncommitted changes detected!".yellow());
@@ -20,6 +21,7 @@ pub fn smart_pull() {
         pull_strategy_decision();
     } else {
         println!("{}", "✅ Branch already up to date.".green());
+        pull_happened = false;
     }
 
     if stashed {
@@ -34,7 +36,9 @@ pub fn smart_pull() {
             "{}",
             "✅ Pull and unstash successful. Ready to work!".green()
         );
-        show_pull_summary();
+        if pull_happened {
+            show_pull_summary();
+        }
     }
 }
 
