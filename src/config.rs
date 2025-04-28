@@ -7,21 +7,21 @@ pub static GIT_AI_CONFIG: Lazy<GitAIConfig> = Lazy::new(|| load_git_ai_config())
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct GitAIConfig {
-    pub auto_commit: bool,
-    pub auto_push: bool,
+    pub auto_commit: Option<bool>,
+    pub auto_push: Option<bool>,
     pub editor: Option<String>,
     pub llm_backend: Option<String>,
-    pub ai_enabled: bool,
+    pub ai_enabled: Option<bool>,
 }
 
 impl Default for GitAIConfig {
     fn default() -> Self {
         GitAIConfig {
-            auto_commit: false,
-            auto_push: false,
+            auto_commit: Some(false),
+            auto_push: Some(false),
             editor: None,
             llm_backend: None,
-            ai_enabled: false,
+            ai_enabled: Some(false),
         }
     }
 }

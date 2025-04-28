@@ -20,8 +20,8 @@ pub async fn add_files(all: bool, files: Vec<String>) {
         is_added = interactive_add(&auto_ignores);
     }
 
-    if is_added && GIT_AI_CONFIG.auto_commit {
-        commit_changes(false, false, GIT_AI_CONFIG.ai_enabled).await;
+    if is_added && GIT_AI_CONFIG.auto_commit == Some(true) {
+        commit_changes(false, false, GIT_AI_CONFIG.ai_enabled == Some(true)).await;
         return;
     }
 }

@@ -26,7 +26,7 @@ pub async fn commit_changes(amend: bool, reword: bool, ai: bool) {
     }
 
     if is_committed {
-        if GIT_AI_CONFIG.auto_push {
+        if GIT_AI_CONFIG.auto_push == Some(true) {
             push_changes();
             return;
         }
