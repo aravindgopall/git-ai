@@ -32,11 +32,11 @@ pub fn smart_pull() {
     if is_merge_conflict() {
         show_conflict_summary();
     } else {
-        println!(
-            "{}",
-            "✅ Pull and unstash successful. Ready to work!".green()
-        );
         if pull_happened {
+            println!(
+                "{}",
+                "✅ Pull and unstash successful. Ready to work!".green()
+            );
             show_pull_summary();
         }
     }
