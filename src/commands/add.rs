@@ -10,31 +10,31 @@ pub async fn add_files(all: bool, files: Vec<String>) {
 
     let language = detect_language();
     let auto_ignores = get_combined_ignores(&language);
+    let is_added;
 
     if all {
-        add_all_files(&auto_ignores);
+        is_added = add_all_files(&auto_ignores);
     } else if !files.is_empty() {
-        add_specific_files(&files, &auto_ignores);
+        is_added = add_specific_files(&files, &auto_ignores);
     } else {
-        interactive_add(&auto_ignores);
+        is_added = interactive_add(&auto_ignores);
     }
 
-    if GIT_AI_CONFIG.auto_commit {
+    if is_added && GIT_AI_CONFIG.auto_commit {
         commit_changes(false, false, GIT_AI_CONFIG.ai_enabled).await;
+        println!("successfully added, do you want to commit also (y/n)");
+        let mut answer = String::new();
+        std::io::stdin().read_line(&mut answer).unwrap();
+
+        if answer.trim().to_lowercase() == "y" {
+            commit_changes(false, false, GIT_AI_CONFIG.ai_enabled).await;
+        }
         return;
-    }
-
-    println!("successfully added, do you want to commit also (y/n)");
-    let mut answer = String::new();
-    std::io::stdin().read_line(&mut answer).unwrap();
-
-    if answer.trim().to_lowercase() == "y" {
-        commit_changes(false, false, GIT_AI_CONFIG.ai_enabled).await;
     }
 }
 
 // 🔥 Stage all unstaged files
-fn add_all_files(auto_ignores: &[String]) {
+fn add_all_files(auto_ignores: &[String]) -> bool {
     println!("{}", "📝 Staging all unstaged files...".cyan());
 
     let output = Command::new("git")
@@ -44,6 +44,7 @@ fn add_all_files(auto_ignores: &[String]) {
         .expect("Failed to run git status");
 
     let status_text = String::from_utf8_lossy(&output.stdout);
+    let mut added = false;
 
     let mut unstaged_files = Vec::new();
     let mut ignored_files = Vec::new();
@@ -68,6 +69,7 @@ fn add_all_files(auto_ignores: &[String]) {
 
         if answer == "y" {
             for file in ignored_files {
+                added = true;
                 Command::new("git")
                     .arg("add")
                     .arg(&file)
@@ -78,10 +80,11 @@ fn add_all_files(auto_ignores: &[String]) {
         } else {
             println!("{}", "🛑 Staging cancelled.".red());
         }
-        return;
+        return added;
     }
 
     for file in unstaged_files {
+        added = true;
         Command::new("git")
             .arg("add")
             .arg(&file)
@@ -89,9 +92,11 @@ fn add_all_files(auto_ignores: &[String]) {
             .expect("Failed to git add");
         println!("✅ Staged: {}", file.bright_green());
     }
+    return added;
 }
 
-fn add_specific_files(files: &[String], auto_ignores: &[String]) {
+fn add_specific_files(files: &[String], auto_ignores: &[String]) -> bool {
+    let mut is_added = false;
     for file in files {
         if should_ignore_file(file, auto_ignores) {
             println!(
@@ -109,6 +114,7 @@ fn add_specific_files(files: &[String], auto_ignores: &[String]) {
                 continue;
             }
         }
+        is_added = true;
 
         Command::new("git")
             .arg("add")
@@ -118,10 +124,11 @@ fn add_specific_files(files: &[String], auto_ignores: &[String]) {
 
         println!("✅ Staged: {}", file.bright_green());
     }
+    return is_added;
 }
 
 // 🔥 Interactive add
-fn interactive_add(auto_ignores: &[String]) {
+fn interactive_add(auto_ignores: &[String]) -> bool {
     println!("{}", "📝 Interactive add: choose files to stage".cyan());
 
     let output = Command::new("git")
@@ -146,7 +153,7 @@ fn interactive_add(auto_ignores: &[String]) {
 
     if unstaged_files.is_empty() {
         println!("{}", "✅ No unstaged files found!".green());
-        return;
+        return false;
     }
 
     println!("\nUnstaged files:");
@@ -171,8 +178,10 @@ fn interactive_add(auto_ignores: &[String]) {
                 .expect("Failed to git add");
             println!("✅ Staged: {}", file.bright_green());
         }
+        return true;
     } else {
         let picks: Vec<&str> = selection.split(' ').collect();
+        let mut added = false;
         for pick in picks {
             if let Ok(index) = pick.trim().parse::<usize>() {
                 if index > 0 && index <= unstaged_files.len() {
@@ -183,6 +192,7 @@ fn interactive_add(auto_ignores: &[String]) {
                         .status()
                         .expect("Failed to git add");
                     println!("✅ Staged: {}", file.bright_green());
+                    added = true;
                 } else {
                     println!("❌ Invalid selection: {}", pick);
                 }
@@ -190,5 +200,6 @@ fn interactive_add(auto_ignores: &[String]) {
                 println!("❌ Invalid input: {}", pick);
             }
         }
+        return added;
     }
 }
